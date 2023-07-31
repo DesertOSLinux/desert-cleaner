@@ -1,0 +1,76 @@
+#!/usr/bin/python3
+
+import sys
+import optparse
+import logging
+
+import dbus
+import dbus.service
+import dbus.mainloop.glib
+
+import gi
+gi.require_version("Gtk", "3.0")
+gi.require_version("Gdk", "3.0")
+from gi.repository import GObject, Gdk, Gtk, Gio
+
+from desertcleaner.utils import system
+from desertcleaner.settings.constants import VERSION, IS_INSTALLED
+from desertcleaner.settings.debug import enable_debugging
+
+
+def parse_args(argv):
+    parser = optparse.OptionParser(prog="desert-cleaner",
+                                   version="%%prog %s" % VERSION,
+                                   description="Desert Cleaner is a tool that makes it easy to clean your desert system.")
+    parser.add_option("-d", "--debug", action="store_true", default=False,
+                      help="Generate more debugging information.  [default: %default]")
+    return parser.parse_args(argv)
+
+
+class DesertCleanerApp(Gtk.Application):
+    _window = None
+    log = logging.getLogger('Launcher')
+
+    def __init__(self, application_id='com.desert-cleaner.Clean'):
+        Gtk.Application.__init__(self,
+                                 application_id=application_id,
+                                 flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+
+        self.log.debug("Distribution: %s\nApplication: %s\nDesktop:%s" % (system.DISTRO,
+                                           system.APP,
+                                           system.DESKTOP))
+
+        self.connect('activate', self.on_activated)
+        self.connect('startup', self.on_startup)
+        self.connect('command-line', self.on_command_line)
+
+    def on_startup(self, app):
+        from desertcleaner.main import DesertCleanerWindow
+
+        self._window = DesertCleanerWindow()
+        self.add_window(self._window.mainwindow)
+
+        Gtk.main()
+
+    def on_activated(self, app):
+        if self.get_windows():
+            self.get_windows()[0].present()
+
+    def on_command_line(self, app, commandline):
+        self.log.debug("on_command_line: %s", commandline.get_arguments())
+        self.on_activated(app)
+
+if __name__ == "__main__":
+    options, args = parse_args(sys.argv)
+
+    if options.debug or not IS_INSTALLED:
+        enable_debugging()
+
+    # Required to use existing system daemons such Apt Daemon
+    Gdk.threads_init()
+    GObject.threads_init()
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    dbus.mainloop.glib.threads_init()
+
+    app = DesertCleanerApp()
+    app.run(sys.argv)

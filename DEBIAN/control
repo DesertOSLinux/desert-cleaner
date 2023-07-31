@@ -1,0 +1,9 @@
+Package: desert-cleaner
+Version: 1.0
+Architecture: all
+Maintainer: Kernitskiy Yaroslav <yaroslavsadova1@gmail.com>
+Installed-Size: 3642
+Depends: python-lxml, policykit-1-gnome, gir1.2-vte-2.91, gir1.2-gtk-3.0, gir1.2-notify-0.7, gir1.2-webkit2-4.0, gir1.2-soup-2.4, dconf-gsettings-backend | gsettings-backend, python2.7, python (>= 2.7.1-0ubuntu2), python (<< 2.8)
+Section: utils
+Priority: optional
+Description: Очистка системы от мусора и ненужных файлов

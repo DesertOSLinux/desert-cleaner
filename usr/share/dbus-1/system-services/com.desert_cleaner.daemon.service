@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.desert_cleaner.daemon
+Exec=/usr/share/desert-cleaner/desert-cleaner-daemon
+User=root

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=DesertCleaner
+Name[ru]=Очистка системы
+Comment=DesertCleaner is a tool that makes it easy to clean your system
+Comment[ru]=Очистка системы от мусора
+Exec=desert-cleaner
+Icon=desert-cleaner
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+StartupNotify=true
+Categories=Desert;Program;
